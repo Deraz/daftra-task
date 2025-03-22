@@ -1,5 +1,5 @@
 export interface NavItem {
-  id: string;
+  id: number;
   title: string;
   target: string;
   visible?: boolean;

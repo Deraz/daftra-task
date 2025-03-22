@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
-import { NavItem as INavItem } from "@/types/nav";
 import { useEffect, useRef, useState } from "react";
+import { INavItemComponent } from "@/types/INavItemComponent";
+import useNavItemDragAndDrop from "@/hooks/useDragAndDrop";
 
 const NavItem = ({
   item,
@@ -10,20 +11,19 @@ const NavItem = ({
   onClick,
   setVisibility,
   setTitle,
-}: {
-  item: INavItem;
-  isChild?: boolean;
-  isEditMode?: boolean;
-  onClick: (
-    item: INavItem,
-    e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
-  ) => void;
-  setVisibility: (item: INavItem, isVisible: boolean) => void;
-  setTitle: (item: INavItem, newTitle: string) => void;
-}) => {
+  index,
+  moveItem,
+  parentIndex,
+}: INavItemComponent) => {
   const [newTitle, setNewTitle] = useState(item.title);
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  const { ref, isDragging } = useNavItemDragAndDrop({
+    isEditMode,
+    index,
+    parentIndex,
+    moveItem,
+  });
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -43,6 +43,7 @@ const NavItem = ({
 
   return (
     <li
+      ref={ref}
       className={`${
         item.visible !== false || isEditMode ? "flex flex-col gap-2" : "hidden"
       }`}
@@ -52,7 +53,8 @@ const NavItem = ({
         onClick={(e) => onClick(item, e)}
         className={`flex justify-between items-center w-full p-2 rounded cursor-pointer hover:bg-[#d7d7d7] ${
           isChild ? "" : "bg-[#F7F7F7]"
-        } ${item.visible === false ? "opacity-50" : ""}`}
+        } ${item.visible === false ? "opacity-50" : ""}
+        ${isDragging ? "bg-blue-300 opacity-50" : ""}`}
       >
         <span className="flex gap-2 items-center">
           {isEditMode && (
@@ -132,7 +134,7 @@ const NavItem = ({
               item.isExpanded || isEditMode ? "block" : "hidden"
             } ps-4`}
           >
-            {item.children.map((child) => (
+            {item.children.map((child, childIndex) => (
               <NavItem
                 item={child}
                 key={child.id}
@@ -141,6 +143,9 @@ const NavItem = ({
                 isEditMode={isEditMode}
                 setVisibility={setVisibility}
                 setTitle={setTitle}
+                index={childIndex}
+                parentIndex={index}
+                moveItem={moveItem}
               />
             ))}
           </ul>

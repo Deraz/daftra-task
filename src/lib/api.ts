@@ -23,3 +23,25 @@ export const saveNavItems = async (navItems: NavItem[]): Promise<void> => {
     throw new Error("Failed to save navigation items");
   }
 };
+
+export const trackNavItems = async (
+  id: number,
+  from: number,
+  to: number
+): Promise<void> => {
+  try {
+    const response = await fetch("http://localhost:8081/track", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ id, from, to }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Failed to save navigation items");
+    }
+  } catch {
+    throw new Error("Failed to save navigation items");
+  }
+};

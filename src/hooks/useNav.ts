@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import {
   fetchNavItems as fetchNavItemsApi,
   saveNavItems as saveNavItemsApi,
+  trackNavItems,
 } from "@/lib/api";
 
 export default function useNav() {
@@ -95,6 +96,33 @@ export default function useNav() {
     updateItem(item, "title", newTitle);
   };
 
+  const moveItem = async (from: number, to: number, parentIndex?: number) => {
+    if (from === to) return;
+    const newNavItems = [...navItems];
+
+    try {
+      if (parentIndex === undefined) {
+        const [movedItem] = newNavItems.splice(from, 1);
+        newNavItems.splice(to, 0, movedItem);
+        await trackNavItems(movedItem.id, from, to);
+      } else {
+        // Moving within a parent (Children)
+        const parentItem = newNavItems.find((item, idx) => idx === parentIndex);
+        if (!parentItem || !parentItem.children) return newNavItems;
+
+        const updatedChildren = [...parentItem.children];
+        const [movedChild] = updatedChildren.splice(from, 1);
+        updatedChildren.splice(to, 0, movedChild);
+        parentItem.children = updatedChildren;
+        await trackNavItems(movedChild.id, from, to);
+      }
+
+      setNavItems(newNavItems);
+    } catch {
+      //silently fail as it's just tracking
+    }
+  };
+
   const discardChanges = async () => {
     await fetchNavItems();
     setIsEditMode(false);
@@ -104,6 +132,7 @@ export default function useNav() {
     await saveNavItems(navItems);
     setIsEditMode(false);
   };
+
   return {
     navItems,
     loading,
@@ -116,5 +145,6 @@ export default function useNav() {
     setTitle,
     discardChanges,
     saveChanges,
+    moveItem,
   };
 }
