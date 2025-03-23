@@ -1,14 +1,14 @@
 import { NavItem } from "@/types/nav";
-
+const BASE_URL = "https://daftra-backend-production.up.railway.app";
 export const fetchNavItems = async (): Promise<NavItem[]> => {
-  const res = await fetch("http://localhost:8081/nav");
+  const res = await fetch(`${BASE_URL}/nav`);
   if (!res.ok) throw new Error("Failed to fetch navigation items");
   return res.json();
 };
 
 export const saveNavItems = async (navItems: NavItem[]): Promise<void> => {
   try {
-    const response = await fetch("http://localhost:8081/nav", {
+    const response = await fetch(`${BASE_URL}/nav`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -30,7 +30,7 @@ export const trackNavItems = async (
   to: number
 ): Promise<void> => {
   try {
-    const response = await fetch("http://localhost:8081/track", {
+    const response = await fetch(`${BASE_URL}/track`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

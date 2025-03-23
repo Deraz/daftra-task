@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
 const Navbar = () => {
@@ -94,16 +95,23 @@ const Navbar = () => {
               {item.isVerticalRule ? (
                 <div className="h-12 bg-[#D6D6D699] w-0.5" />
               ) : (
-                <>
+                <div className="relative">
                   <Image
                     src={item.icon as string}
                     alt={item.title as string}
-                    width={28}
+                    width={50}
                     height={28}
                     className="hover:opacity-80"
                   />
-                  <span className="hover:opacity-80 text-sm">{item.title}</span>
-                </>
+                  <div className="absolute bottom-[-6px] p-1 right-[-6px] rounded-full flex items-center justify-center ms-1 border border-solid border-[#F0F0F0] bg-white">
+                    <Image
+                      src="/burger-menu.png"
+                      alt="menu"
+                      width={12}
+                      height={12}
+                    />
+                  </div>
+                </div>
               )}
               {item.hasMenu && (
                 <div
@@ -115,7 +123,9 @@ const Navbar = () => {
                 >
                   <div
                     className={` w-1/5 flex-1 z-50 duration-1000 transition-all ${
-                      isOpen ? "opacity-60 bg-black" : "bg-transparent opacity-0 pointer-events-none"
+                      isOpen
+                        ? "opacity-60 bg-black"
+                        : "bg-transparent opacity-0 pointer-events-none"
                     }`}
                     onClick={(e) => {
                       e.stopPropagation();
@@ -148,9 +158,14 @@ const Navbar = () => {
                       {navItems
                         .filter((i) => !i.hasMenu && !i.isVerticalRule)
                         .map((item) => (
-                          <div
+                          <Link
                             className="flex gap-2 items-center"
                             key={item.title}
+                            href="/"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setIsOpen(false);
+                            }}
                           >
                             <Image
                               src={"/navbar-black" + item.icon}
@@ -162,7 +177,7 @@ const Navbar = () => {
                             <span className="hover:opacity-80">
                               {item.title}
                             </span>
-                          </div>
+                          </Link>
                         ))}
                     </div>
                     <div className="flex flex-col gap-2 text-[#707070] border-0 border-y border-solid border-[#F0F0F0] mb-4 -mx-4 p-4">
