@@ -1,3 +1,4 @@
+import { trackNavItems } from "@/lib/api";
 import { useRef } from "react";
 import { useDrag, useDrop } from "react-dnd";
 
@@ -24,7 +25,7 @@ export default function useNavItemDragAndDrop({
     canDrag: isEditMode,
     collect: (monitor) => ({
       isDragging: monitor.isDragging(),
-    })
+    }),
   });
 
   const [, drop] = useDrop({
@@ -39,6 +40,9 @@ export default function useNavItemDragAndDrop({
         moveItem(draggedItem.index, index, parentIndex);
         draggedItem.index = index;
       }
+    },
+    drop: async () => {
+      await trackNavItems();
     },
   });
 

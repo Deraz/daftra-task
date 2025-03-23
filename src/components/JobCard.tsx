@@ -70,12 +70,12 @@ const JobCard = ({
       <div className="h-[1px] bg-[#F0F0F0]" />
       <div className="flex flex-wrap gap-2 text-[#707070]">
         {fields.map((field, index) => (
-          <>
+          <span key={index}>
             <span key={field} className="text-sm">
               {field}
             </span>
             {index !== fields.length - 1 && <span className="text-sm">-</span>}
-          </>
+          </span>
         ))}
       </div>
     </div>

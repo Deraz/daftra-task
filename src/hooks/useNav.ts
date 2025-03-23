@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import {
   fetchNavItems as fetchNavItemsApi,
   saveNavItems as saveNavItemsApi,
-  trackNavItems,
 } from "@/lib/api";
 
 export default function useNav() {
@@ -104,7 +103,6 @@ export default function useNav() {
       if (parentIndex === undefined) {
         const [movedItem] = newNavItems.splice(from, 1);
         newNavItems.splice(to, 0, movedItem);
-        await trackNavItems(movedItem.id, from, to);
       } else {
         // Moving within a parent (Children)
         const parentItem = newNavItems.find((item, idx) => idx === parentIndex);
@@ -114,7 +112,6 @@ export default function useNav() {
         const [movedChild] = updatedChildren.splice(from, 1);
         updatedChildren.splice(to, 0, movedChild);
         parentItem.children = updatedChildren;
-        await trackNavItems(movedChild.id, from, to);
       }
 
       setNavItems(newNavItems);

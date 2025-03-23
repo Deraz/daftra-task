@@ -24,18 +24,14 @@ export const saveNavItems = async (navItems: NavItem[]): Promise<void> => {
   }
 };
 
-export const trackNavItems = async (
-  id: number,
-  from: number,
-  to: number
-): Promise<void> => {
+export const trackNavItems = async (): Promise<void> => {
   try {
     const response = await fetch(`${BASE_URL}/track`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ id, from, to }),
+      body: JSON.stringify({ id: 1, from: 1, to: 1 }),
     });
 
     if (!response.ok) {
